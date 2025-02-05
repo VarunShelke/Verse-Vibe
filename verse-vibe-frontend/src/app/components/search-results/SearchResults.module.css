@@ -1,0 +1,14 @@
+.search-results-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  justify-items: center;
+  flex-flow: row wrap;
+}
+
+.search-results-container .card {
+  width: 100%;
+  max-width: 300px;
+}
+  

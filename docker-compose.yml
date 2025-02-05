@@ -1,0 +1,79 @@
+volumes:
+  esdata01:
+    driver: local
+  kibanadata:
+    driver: local
+  
+networks:
+  default:
+    name: elastic
+    external: false
+  
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    volumes:
+      - esdata01:/usr/share/elasticsearch/data
+    ports:
+      - ${ES_PORT}:9200
+    environment:
+      - node.name=es01
+      - cluster.name=${CLUSTER_NAME}
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - xpack.license.self_generated.type=${LICENSE}
+      - xpack.monitoring.collection.enabled=true
+    mem_limit: ${ES_MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s http://localhost:9200 | grep -q 'You Know, for Search'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  kibana:
+    depends_on:
+      es01:
+        condition: service_healthy
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    volumes:
+      - kibanadata:/usr/share/kibana/data
+    ports:
+      - ${KIBANA_PORT}:5601
+    environment:
+      - SERVERNAME=kibana
+      - SERVER_HOST=0.0.0.0
+      - ELASTICSEARCH_HOSTS=http://es01:9200
+      # - ELASTICSEARCH_USERNAME=kibana_system
+      # - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
+    mem_limit: ${KB_MEM_LIMIT}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -I -s http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  frontend:
+    image: node:23.1.0
+    working_dir: /app
+    volumes:
+      - ./verse-vibe-frontend:/app
+      - /app/node_modules
+    ports:
+      - ${NEXT_APP_PORT}:3000
+    command: 'sh -c "npm install && npm run dev"'

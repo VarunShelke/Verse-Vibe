@@ -1,0 +1,48 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "analysis": {
+      "analyzer": {
+        "song_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "asciifolding", "porter_stem"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text",
+        "analyzer": "song_analyzer",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "artists": {
+        "type": "text",
+        "analyzer": "song_analyzer",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "lyrics": {
+        "type": "text",
+        "analyzer": "song_analyzer",
+        "index_options": "positions"
+      },
+      "tag": {"type": "text", "index": false},
+      "id": {"type": "long", "index": false},
+      "language": {"type": "text", "index": false},
+      "generatedDate": {"type": "date", "index": false}
+    }
+  }
+}

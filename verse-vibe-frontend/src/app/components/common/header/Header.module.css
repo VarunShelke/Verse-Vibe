@@ -1,0 +1,14 @@
+.app-bar {
+    padding: 16px 0;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: center;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+}
