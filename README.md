@@ -73,6 +73,6 @@ Music discovery is often driven by remembering a song's lyrics rather than its t
   The client server should be running on port `3000`. Open your browser and visit [http://localhost:3000](http://localhost:3000).
 
 ## Contributors
+- Varun Shelke (vps27@pitt.edu)
 - Mohammed Misran (mom218@pitt.edu)
 - Satvik Tandon (sat362@pitt.edu)
-- Varun Shelke (vps27@pitt.edu)
